@@ -53,25 +53,30 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
     # remove the .ndpi extension
     wsi_name_no_ext = wsi_name[:-5]
 
-    # wsi_name_source_path = os.path.join(slide_source_dir, wsi_name)
+    # check to see if the wsi_name_no_ext folder already exists in save_dir_dzsave
+    if os.path.exists(os.path.join(save_dir_dzsave, wsi_name_no_ext)):
+        print(f"Folder {wsi_name_no_ext} already exists in {save_dir_dzsave}. Skipping...")
+        continue
 
-    # # Run rsync using subprocess, which waits for it to finish
-    # subprocess.run(["rsync", "-av", wsi_name_source_path, save_dir_ndpi], check=True)
+    wsi_name_source_path = os.path.join(slide_source_dir, wsi_name)
 
-    # new_wsi_path = os.path.join(save_dir_ndpi, wsi_name)
+    # Run rsync using subprocess, which waits for it to finish
+    subprocess.run(["rsync", "-av", wsi_name_source_path, save_dir_ndpi], check=True)
 
-    # dzsave(wsi_path = new_wsi_path, 
-    #        save_dir = save_dir_dzsave, 
-    #        folder_name = wsi_name_no_ext,
-    #        tile_size = 512, 
-    #        num_cpus = 32,
-    #        region_cropping_batch_size =256)
+    new_wsi_path = os.path.join(save_dir_ndpi, wsi_name)
 
-    # # remove the wsi_name_no_ext.dzi file from the error_slides_dzsave folder
-    # dzi_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}.dzi")
+    dzsave(wsi_path = new_wsi_path, 
+           save_dir = save_dir_dzsave, 
+           folder_name = wsi_name_no_ext,
+           tile_size = 512, 
+           num_cpus = 32,
+           region_cropping_batch_size =256)
 
-    # if os.path.exists(dzi_path):
-    #     os.remove(dzi_path)
+    # remove the wsi_name_no_ext.dzi file from the error_slides_dzsave folder
+    dzi_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}.dzi")
+
+    if os.path.exists(dzi_path):
+        os.remove(dzi_path)
 
     # rename the folder with name wsi_name_no_ext_files to wsi_name_no_ext
     old_folder_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}_files")
