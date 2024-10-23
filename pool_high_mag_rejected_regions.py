@@ -35,7 +35,7 @@ pseudo_idx = 0
 for idx, row in tqdm(rows.iterrows(), desc="Getting cell regions"):
 
     # get the path to the cell regions which are all the .jpg files in the result_dir/pipeline_datetime_processed/focus_regions/high_mag_rejected folder
-    high_mag_rejected_dir = os.path.join(result_dir, row["pipeline"], row["datetime_processed"], "focus_regions", "high_mag_rejected")
+    high_mag_rejected_dir = os.path.join(result_dir, row["pipeline"] + "_" + row["datetime_processed"], "focus_regions", "high_mag_rejected")
 
     if not os.path.exists(high_mag_rejected_dir):
         print(f"Folder {high_mag_rejected_dir} does not exist. Skipping...")
