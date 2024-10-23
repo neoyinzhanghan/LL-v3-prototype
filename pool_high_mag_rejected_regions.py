@@ -11,7 +11,7 @@ notes_to_keep = ["First all-slide BMA-diff and PBS-diff processing with specimen
 pipeline_run_history = pd.read_csv(pipeline_run_history_path)
 
 # get the rows with the notes in notes_to_keep
-rows = pipeline_run_history[pipeline_run_history["notes"].isin(notes_to_keep)]
+rows = pipeline_run_history[pipeline_run_history["note"].isin(notes_to_keep)]
 
 print(f"Found {len(rows)} rows with the notes in notes_to_keep.")
 
