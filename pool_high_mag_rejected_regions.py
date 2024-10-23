@@ -77,7 +77,7 @@ for idx, row in tqdm(rows.iterrows(), desc="Getting cell regions"):
         cell_regions_df_dict["wsi_name"].append(row["wsi_name"])
         cell_regions_df_dict["pipeline"].append(row["pipeline"])
         cell_regions_df_dict["datetime_processed"].append(row["datetime_processed"])
-        cell_regions_df_dict["note"].append(row["notes"])
+        cell_regions_df_dict["note"].append(row["note"])
         cell_regions_df_dict["region_idx"].append(region_idx)
         cell_regions_df_dict["region_file_path"].append(region_file_path)
         cell_regions_df_dict["low_mag_score"].append(low_mag_score)
