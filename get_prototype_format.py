@@ -77,4 +77,5 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
     old_folder_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}_files")
     new_folder_path = os.path.join(save_dir_dzsave, wsi_name_no_ext)
 
-    os.rename(old_folder_path, new_folder_path)
+    if os.path.exists(old_folder_path): 
+        os.rename(old_folder_path, new_folder_path)
