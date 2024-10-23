@@ -71,11 +71,6 @@ try:
         # remove the .ndpi extension
         wsi_name_no_ext = wsi_name[:-5]
 
-        # check to see if the wsi_name_no_ext folder already exists in save_dir_dzsave
-        if os.path.exists(os.path.join(save_dir_dzsave, wsi_name_no_ext)):
-            print(f"Folder {wsi_name_no_ext} already exists in {save_dir_dzsave}. Skipping...")
-            continue
-
         # create the dzsave directory
         dzsave_dir = os.path.join(save_dir_dzsave, wsi_name_no_ext)
 
