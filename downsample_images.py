@@ -2,6 +2,7 @@ import os
 import subprocess
 import pandas as pd
 from tqdm import tqdm
+from image_downsampler import downsample_slide_dzsave_dir
 
 
 topview_dir = "selected_topviews"
@@ -46,4 +47,6 @@ for name in tqdm(all_names, desc="Getting WSI names"):
 
 wsi_names_df = pd.DataFrame(wsi_names_df)
 wsi_names_df.to_csv("selected_topviews/wsi_names.csv", index=False)
+
+
 

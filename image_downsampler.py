@@ -57,7 +57,7 @@ def create_list_of_batches_from_list(list, batch_size):
 
     return list_of_batches
 
-def downsample_images(image_paths, downsample_factor=8, num_downsamplers=32, downsample_batch_size=256):
+def downsample_images(image_paths, downsample_factor=8, num_downsamplers=96, downsample_batch_size=256):
     # Initialize a list of downsamplers
     downsamplers = [ImageDownsampler.remote(downsample_factor) for _ in range(num_downsamplers)]
 
