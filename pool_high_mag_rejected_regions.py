@@ -32,7 +32,7 @@ cell_regions_df_dict = {
 
 pseudo_idx = 0
 
-for idx, row in tqdm(rows.iterrows(), desc="Getting cell regions"):
+for idx, row in tqdm(rows.iterrows(), total=len(rows), desc="Processing Rows"):
 
     # get the path to the cell regions which are all the .jpg files in the result_dir/pipeline_datetime_processed/focus_regions/high_mag_rejected folder
     high_mag_rejected_dir = os.path.join(result_dir, row["pipeline"] + "_" + row["datetime_processed"], "focus_regions", "high_mag_rejected")
