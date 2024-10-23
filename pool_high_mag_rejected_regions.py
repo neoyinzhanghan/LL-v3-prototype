@@ -44,8 +44,8 @@ for idx, row in tqdm(rows.iterrows(), desc="Getting cell regions"):
     # get all the file names in the high_mag_rejected_dir
     high_mag_rejected_files = os.listdir(high_mag_rejected_dir)
 
-    low_mag_csv_path = os.path.join(result_dir, row["pipeline"], row["datetime_processed"], "focus_regions", "focus_regions_info.csv")
-    high_mag_csv_path = os.path.join(result_dir, row["pipeline"], row["datetime_processed"], "focus_regions", "high_mag_focus_regions_info.csv")
+    low_mag_csv_path = os.path.join(result_dir, row["pipeline"] + "_" + row["datetime_processed"], "focus_regions", "focus_regions_info.csv")
+    high_mag_csv_path = os.path.join(result_dir, row["pipeline"]  + "_" + row["datetime_processed"], "focus_regions", "high_mag_focus_regions_info.csv")
 
     low_mag_df = pd.read_csv(low_mag_csv_path)
     high_mag_df = pd.read_csv(high_mag_csv_path)
