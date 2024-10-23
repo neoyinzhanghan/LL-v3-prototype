@@ -95,3 +95,5 @@ for idx, row in tqdm(rows.iterrows(), total=len(rows), desc="Processing Rows"):
 cell_regions_df = pd.DataFrame(cell_regions_df_dict)
 cell_regions_df.to_csv("/media/hdd3/neo/bma_high_mag_rejected_regions/regions_metadata.csv", index=False)
 
+# print the total number of regions found
+print(f"Found {pseudo_idx} regions.")
