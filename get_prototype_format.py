@@ -67,8 +67,14 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
     #        num_cpus = 32,
     #        region_cropping_batch_size =256)
 
-    # remove the wsi_name_no_ext.dzi file from the error_slides_dzsave folder
-    dzi_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}.dzi")
+    # # remove the wsi_name_no_ext.dzi file from the error_slides_dzsave folder
+    # dzi_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}.dzi")
 
-    if os.path.exists(dzi_path):
-        os.remove(dzi_path)
+    # if os.path.exists(dzi_path):
+    #     os.remove(dzi_path)
+
+    # rename the folder with name wsi_name_no_ext_files to wsi_name_no_ext
+    old_folder_path = os.path.join(save_dir_dzsave, f"{wsi_name_no_ext}_files")
+    new_folder_path = os.path.join(save_dir_dzsave, wsi_name_no_ext)
+
+    os.rename(old_folder_path, new_folder_path)
