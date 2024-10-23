@@ -13,6 +13,9 @@ pipeline_run_history = pd.read_csv(pipeline_run_history_path)
 # get the rows with the notes in notes_to_keep
 rows = pipeline_run_history[pipeline_run_history["note"].isin(notes_to_keep)]
 
+# only keeps rows where the pipeline is BMA-diff
+rows = rows[rows["pipeline"] == "BMA-diff"]
+
 print(f"Found {len(rows)} rows with the notes in notes_to_keep.")
 
 cell_regions_df_dict = {
