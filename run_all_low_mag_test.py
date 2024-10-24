@@ -11,6 +11,27 @@ from BMAassumptions import region_clf_ckpt_path, high_mag_region_clf_ckpt_path, 
 # Define the dataset path
 dataset_path = '/media/hdd3/neo/error_slides_dzsave/H21-9456;S9;MSK9 - 2023-05-19 13.58.34'
 
+
+# if the folder high_mag_test does not exist, create it, also create the folder high_mag_test/high_mag_selected
+os.makedirs("low_mag_test", exist_ok=True) 
+os.makedirs("low_mag_test/top_1000_low_mag", exist_ok=True)
+os.makedirs("low_mag_test/high_mag_selected", exist_ok=True)
+os.makedirs("low_mag_test/high_mag_rejected", exist_ok=True)
+
+
+# if the folder high_mag_test does exit, then delete it
+if os.path.exists("low_mag_test"):
+    os.rmdir("low_mag_test")
+
+    # then create the folder high_mag_test
+    os.makedirs("low_mag_test", exist_ok=True) 
+    os.makedirs("low_mag_test/top_1000_low_mag", exist_ok=True)
+    os.makedirs("low_mag_test/high_mag_selected", exist_ok=True)
+    os.makedirs("low_mag_test/high_mag_rejected", exist_ok=True)
+    
+
+
+
 # Parameters
 batch_size = 256  # Batch size for loading images
 num_workers = 8   # Adjust number of workers based on your CPU cores
