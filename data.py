@@ -40,7 +40,7 @@ class HighMagRegionDataset(Dataset):
 
     """
 
-    def _init_(self, slide_prototype_path, image_names):
+    def __init__(self, slide_prototype_path, image_names):
         self.slide_prototype_path = slide_prototype_path
 
         # get the paths to all the jpeg images in the slide_prototype_path/18
