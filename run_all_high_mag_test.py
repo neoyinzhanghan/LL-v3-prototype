@@ -1,4 +1,5 @@
 import os
+import shutil
 import pandas as pd
 from tqdm import tqdm
 from PIL import Image
@@ -17,7 +18,7 @@ os.makedirs("high_mag_test/high_mag_selected", exist_ok=True)
 
 # if the folder high_mag_test does exit, then delete it
 if os.path.exists("high_mag_test"):
-    os.rmdir("high_mag_test")
+    shutil.rmtree("high_mag_test")
 
     # then create the folder high_mag_test
     os.makedirs("high_mag_test", exist_ok=True) 
