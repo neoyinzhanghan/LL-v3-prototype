@@ -119,12 +119,16 @@ if __name__ == "__main__":
     }
 
     for dzsave_dir in tqdm(dzsave_dirs, desc="Processing Datasets"):
+        print(f"Processing {dzsave_dir}...")
         start_time = time.time()
         process_dataset(dzsave_dir)
         end_time = time.time()
 
         runtime_metadata["dzsave_dir"].append(dzsave_dir)
         runtime_metadata["processing_time"].append(end_time - start_time)
+
+        import sys
+        sys.exit()
 
     runtime_metadata_df = pd.DataFrame(runtime_metadata)
     runtime_metadata_df.to_csv("top_N_solution_prototype_runtime_metadata.csv", index=False)
