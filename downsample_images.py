@@ -100,6 +100,8 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
         print(f"Folder {wsi_name_no_ext} already fully processed. Skipping...")
         already_downsampled_df["wsi_name"].append(wsi_name)
         already_downsampled_df["dzsave_dir"].append(dzsave_dir)
+        already_downsampled_df = pd.DataFrame(already_downsampled_df)
+        already_downsampled_df.to_csv(already_downsampled_df_oath, index=False)
         continue
 
     # downsample the images
