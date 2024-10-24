@@ -35,7 +35,7 @@ results = []
 # Iterate through the dataset with a DataLoader and progress bar
 for pil_images, image_names in tqdm(data_loader, desc="Processing Batches"):
     # Predict batch of images
-    scores = predict_batch(model, pil_images)
+    scores = predict_batch(pil_images, model)
     # Append the results
     results.extend([{"image_name": name, "score": score} for name, score in zip(image_names, scores)])
 
