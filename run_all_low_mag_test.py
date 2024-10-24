@@ -57,7 +57,7 @@ top_1000 = results_df["image_name"].head(1000).values
 top_1000_dir = "test/top_1000_low_mag"
 
 for image_name in tqdm(top_1000, desc="Saving Top 1000 Images"):
-    image_path = os.path.join(dataset_path, image_name)
+    image_path = os.path.join(dataset_path, "18_downsampled", image_name)
     image = Image.open(image_path)
     image.save(os.path.join(top_1000_dir, image_name))
 
@@ -95,11 +95,11 @@ selected_dir = "test/high_mag_selected"
 rejected_dir = "test/high_mag_rejected"
 
 for image_name in tqdm(selected["image_name"], desc="Saving Selected Images"):
-    image_path = os.path.join(dataset_path, image_name)
+    image_path = os.path.join(dataset_path, "18", image_name)
     image = Image.open(image_path)
     image.save(os.path.join(selected_dir, image_name))
 
 for image_name in tqdm(rejected["image_name"], desc="Saving Rejected Images"):
-    image_path = os.path.join(dataset_path, image_name)
+    image_path = os.path.join(dataset_path, "18", image_name)
     image = Image.open(image_path)
     image.save(os.path.join(rejected_dir, image_name))
