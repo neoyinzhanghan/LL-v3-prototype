@@ -5,9 +5,9 @@ import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 
-result_dir = ""
-save_dir = ""
-pipeline_run_history_path = ""
+result_dir = "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/results_dir"
+save_dir = "/media/hdd3/neo/regions_for_greg_to_label"
+pipeline_run_history_path = "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/results_dir/pipeline_run_history.csv"
 
 pipeline_run_history = pd.read_csv(pipeline_run_history_path)
 
@@ -177,7 +177,11 @@ for i in tqdm(range(total_num_cells), desc="Sampling Cells from BMA result high 
 
 
 ndpi_slide_folders = [
-    "",
+    "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/BMA_AML",
+    "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/BMA_Normal",
+    "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/BMA_PCM",
+    "/media/hdd3/neo/BMA_MDS_EB1_EB2",
+    "/media/hdd3/neo/BMA_MDS_non_EB1_EB2", 
 ]
 
 # find all the ndpi files in the ndpi_slide_folders
