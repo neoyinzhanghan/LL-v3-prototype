@@ -12,7 +12,7 @@ if os.path.exists(save_data_dir):
     shutil.rmtree(save_data_dir)
 os.makedirs(save_data_dir, exist_ok=True)
 os.makedirs(os.path.join(save_data_dir, "adequate"), exist_ok=True)
-os.makedirs(os.path.join(save_data_dir, "inadequate"), exist_ok=True)
+os.makedirs(os.path.join(save_data_dir, "not_adequate"), exist_ok=True)
 
 combined_md = {
     "image_path": [],
