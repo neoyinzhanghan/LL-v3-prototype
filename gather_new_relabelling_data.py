@@ -118,26 +118,26 @@ for i in tqdm(range(total_num_cells), desc="Sampling Cells from BMA result high 
    # randomly select a subdir in subdirs
     subdir = random.choice(subdirs)
 
-    data_source_type = "high_mag_rejected"
+    data_source_type = "high_mag_unannotated"
 
     # get the list of .jpg images in the subdir/focus_regions/high_mag_rejected folder
-    high_mag_rejected_files = os.listdir(os.path.join(result_dir, subdir, "focus_regions", "high_mag_rejected"))
+    high_mag_unannotated_files = os.listdir(os.path.join(result_dir, subdir, "focus_regions", "high_mag_unannotated"))
     # make sure the list only contains .jpg files
-    high_mag_rejected_files = [f for f in high_mag_rejected_files if f.endswith(".jpg")]
+    high_mag_unannotated_files = [f for f in high_mag_unannotated_files if f.endswith(".jpg")]
     
-    while len(high_mag_rejected_files) == 0:
+    while len(high_mag_unannotated_files) == 0:
         subdir = random.choice(subdirs)
-        high_mag_rejected_files = os.listdir(os.path.join(result_dir, subdir, "focus_regions", "high_mag_rejected"))
-        high_mag_rejected_files = [f for f in high_mag_rejected_files if f.endswith(".jpg")]
+        high_mag_unannotated_files = os.listdir(os.path.join(result_dir, subdir, "focus_regions", "high_mag_unannotated"))
+        high_mag_unannotated_files = [f for f in high_mag_unannotated_files if f.endswith(".jpg")]
 
     # randomly select a high_mag_rejected_file
-    high_mag_rejected_file = random.choice(high_mag_rejected_files)
+    high_mag_unannotated_file = random.choice(high_mag_unannotated_files)
 
     # get the region_idx from the file name
-    region_idx = int(high_mag_rejected_file[:-4])
+    region_idx = int(high_mag_unannotated_file[:-4])
 
     # get the path to the high_mag_rejected_file
-    region_file_path = os.path.join(result_dir, subdir, "focus_regions", "high_mag_rejected", high_mag_rejected_file)
+    region_file_path = os.path.join(result_dir, subdir, "focus_regions", "high_mag_unannotated", high_mag_unannotated_file)
 
     # get the low_mag_score, high_mag_score, low_mag_VoL, high_mag_VoL, and coordinate
     low_mag_csv_path = os.path.join(result_dir, subdir, "focus_regions", "focus_regions_info.csv")
@@ -176,7 +176,7 @@ for i in tqdm(range(total_num_cells), desc="Sampling Cells from BMA result high 
 
     # save the image to save_dir/high_mag_rejected/pseudo_idx.jpg
     image = Image.open(region_file_path)
-    image.save(os.path.join(save_dir, "high_mag_rejected", f"{pseudo_idx}.jpg"))
+    image.save(os.path.join(save_dir, "high_mag_selected", f"{pseudo_idx}.jpg"))
 
     pseudo_idx += 1
 
