@@ -214,6 +214,10 @@ for i in tqdm(range(total_num_cells), desc="Sampling Cells from NDPI slides"):
     # extract the region from the slide
     region = slide.read_region((TL_x, TL_y), 0, (512, 512))
 
+    # convert from RGBA to RGB
+    if region.mode == "RGBA":
+        region = region.convert("RGB")
+
     # save the region to save_dir/ndpi/pseudo_idx.jpg
     region.save(os.path.join(save_dir, "ndpi", f"{pseudo_idx}.jpg"))
 
