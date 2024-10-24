@@ -32,9 +32,9 @@ for idx, row in tqdm(combined_metadata.iterrows(), total=len(combined_metadata),
         file_basename = os.path.basename(row["image_path"])
         new_path = os.path.join(save_data_dir, "adequate", file_basename)
         shutil.copy(row["image_path"], new_path)
-    elif row["label"] == "inadequate":
+    elif row["label"] == "not_adequate":
         file_basename = os.path.basename(row["image_path"])
-        new_path = os.path.join(save_data_dir, "inadequate", file_basename)
+        new_path = os.path.join(save_data_dir, "not_adequatez", file_basename)
         shutil.copy(row["image_path"], new_path)
 
     combined_md["image_path"].append(new_path)
