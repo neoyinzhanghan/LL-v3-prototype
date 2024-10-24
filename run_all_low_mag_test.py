@@ -16,26 +16,28 @@ num_workers = 8   # Adjust number of workers based on your CPU cores
 # Initialize the dataset
 dataset = LowMagRegionDataset(dataset_path)
 
-# Initialize the DataLoader with specified batch size and number of workers
-data_loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, shuffle=False)
+# Custom collate function to handle PIL images and names
+def custom_collate_fn(batch):
+    # Batch is a list of tuples (PIL image, image_name)
+    pil_images, image_names = zip(*batch)
+    return list(pil_images), list(image_names)
+
+# Initialize the DataLoader with specified batch size, number of workers, and custom collate function
+data_loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, 
+                         shuffle=False, collate_fn=custom_collate_fn)
 
 # Load the model
 model = load_clf_model(region_clf_ckpt_path)
 
 # Prepare lists to store results
-results = {
-    "image_name": [],
-    "score": []
-}
+results = []
 
 # Iterate through the dataset with a DataLoader and progress bar
-for batch in tqdm(data_loader, desc="Processing Batches"):
-    pil_images, image_names = batch
+for pil_images, image_names in tqdm(data_loader, desc="Processing Batches"):
     # Predict batch of images
     scores = predict_batch(model, pil_images)
     # Append the results
-    results["image_name"].extend(image_names)
-    results["score"].extend(scores)
+    results.extend([{"image_name": name, "score": score} for name, score in zip(image_names, scores)])
 
 # Convert results to a DataFrame
 results_df = pd.DataFrame(results)
