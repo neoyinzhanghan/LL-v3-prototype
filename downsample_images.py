@@ -29,6 +29,26 @@ wsi_names_df = {
     "wsi_name": []
 }
 
+def did_we_downsample(dzsave_dir):
+    """
+    This function checks if the dzsave_dir has been downsampled.
+    """
+
+    # check if the dzsave_dir exists
+    if not os.path.exists(dzsave_dir):
+        return False
+    
+    # check if the subdir 18_downsampled exists
+    if not os.path.exists(os.path.join(dzsave_dir, "18_downsampled")):
+        return False
+    
+    # check to see if every .jpeg file in 18 has a corresponding .jpeg file in 18_downsampled with the same file name
+    for image_name in tqdm(os.listdir(os.path.join(dzsave_dir, "18")), desc="Checking if Folder is Fully Processed"):
+        if not os.path.exists(os.path.join(dzsave_dir, "18_downsampled", image_name)):
+            return False
+        
+    return True
+
 for name in tqdm(all_names, desc="Getting WSI names"):
     pipeline = name.split("_")[0]
     datetime_processed = name.split("_")[1].split(".")[0]
@@ -66,21 +86,22 @@ already_downsampled_df = {
     "dzsave_dir": []
 }
 
-try:
-    for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
-        # remove the .ndpi extension
-        wsi_name_no_ext = wsi_name[:-5]
+for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
+    # remove the .ndpi extension
+    wsi_name_no_ext = wsi_name[:-5]
 
-        # create the dzsave directory
-        dzsave_dir = os.path.join(save_dir_dzsave, wsi_name_no_ext)
+    # create the dzsave directory
+    dzsave_dir = os.path.join(save_dir_dzsave, wsi_name_no_ext)
 
-        # downsample the images
-        downsample_slide_dzsave_dir(dzsave_dir)
+    # check to see if the wsi_name_no_ext folder already exists in save_dir_dzsave
+    already_done = did_we_downsample(dzsave_dir)
 
-        already_downsampled_df["wsi_name"].append(wsi_name)
-        already_downsampled_df["dzsave_dir"].append(dzsave_dir)
+    if already_done:
+        print(f"Folder {wsi_name_no_ext} already fully processed. Skipping...")
+        continue
 
-except Exception as e:
-    already_downsampled_df = pd.DataFrame(already_downsampled_df)
-    already_downsampled_df.to_csv(already_downsampled_df_oath, index=False)
-    raise e
+    # downsample the images
+    downsample_slide_dzsave_dir(dzsave_dir)
+
+    already_downsampled_df["wsi_name"].append(wsi_name)
+    already_downsampled_df["dzsave_dir"].append(dzsave_dir)
