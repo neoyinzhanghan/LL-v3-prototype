@@ -245,6 +245,3 @@ for i in tqdm(range(total_num_cells), desc="Sampling Cells from NDPI slides"):
 
 cell_metadata_df = pd.DataFrame(cell_metadata)
 cell_metadata_df.to_csv(os.path.join(save_dir, "cell_metadata.csv"), index=False)
-
-
-    
