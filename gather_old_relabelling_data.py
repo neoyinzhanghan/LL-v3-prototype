@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 splitted_data_dir = "/media/hdd3/neo/bma_region_clf_data_full_v2_split"
 
-save_data_dir = "/media/hdd3/neo/bma_region_clf_data_pooled"
+save_data_dir = "/media/hdd3/neo/bma_region_clf_data_v2_pooled"
 
 if os.path.exists(save_data_dir):
     shutil.rmtree(save_data_dir)
@@ -34,7 +34,7 @@ for idx, row in tqdm(combined_metadata.iterrows(), total=len(combined_metadata),
         shutil.copy(row["image_path"], new_path)
     elif row["label"] == "not_adequate":
         file_basename = os.path.basename(row["image_path"])
-        new_path = os.path.join(save_data_dir, "not_adequatez", file_basename)
+        new_path = os.path.join(save_data_dir, "not_adequate", file_basename)
         shutil.copy(row["image_path"], new_path)
 
     combined_md["image_path"].append(new_path)
