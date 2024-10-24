@@ -12,7 +12,7 @@ slide_source_dir = "/pesgisipth/NDPI"
 save_dir_ndpi = "/media/hdd3/neo/error_slides_ndpi"
 save_dir_dzsave = "/media/hdd3/neo/error_slides_dzsave"
 
-already_downsampled_df_oath = "/media/hdd3/neo/error_slides_dzsave/already_downsampled.csv"
+already_downsampled_df_path = "/media/hdd3/neo/error_slides_dzsave/already_downsampled.csv"
 
 pipeline_run_history = pd.read_csv(pipeline_run_history_path)
 
@@ -70,7 +70,7 @@ for name in tqdm(all_names, desc="Getting WSI names"):
 wsi_names_df = pd.DataFrame(wsi_names_df)
 wsi_names_df.to_csv("selected_topviews/wsi_names.csv", index=False)
 
-presaved_df = pd.read_csv(already_downsampled_df_oath)
+presaved_df = pd.read_csv(already_downsampled_df_path)
 
 # get the column wsi_name from presaved_df as a list
 presaved_wsi_names = presaved_df["wsi_name"].tolist()
@@ -100,8 +100,8 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
         print(f"Folder {wsi_name_no_ext} already fully processed. Skipping...")
         already_downsampled_df["wsi_name"].append(wsi_name)
         already_downsampled_df["dzsave_dir"].append(dzsave_dir)
-        already_downsampled_df = pd.DataFrame(already_downsampled_df)
-        already_downsampled_df.to_csv(already_downsampled_df_oath, index=False)
+        already_downsampled_df_to_save = pd.DataFrame(already_downsampled_df)
+        already_downsampled_df_to_save.to_csv(already_downsampled_df_path, index=False)
         continue
 
     # downsample the images
@@ -109,5 +109,5 @@ for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
     already_downsampled_df["wsi_name"].append(wsi_name)
     already_downsampled_df["dzsave_dir"].append(dzsave_dir)
 
-    already_downsampled_df = pd.DataFrame(already_downsampled_df)
-    already_downsampled_df.to_csv(already_downsampled_df_oath, index=False)
+    already_downsampled_df_to_save = pd.DataFrame(already_downsampled_df)
+    already_downsampled_df_to_save.to_csv(already_downsampled_df_path, index=False)
