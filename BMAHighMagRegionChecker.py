@@ -272,6 +272,40 @@ def predict_image(model, image):
 
     return float(confidence_score[0])
 
+def predict_images_batch(model, images):
+    """
+    Takes a model object and a list of images, preprocesses them, and returns a list of classification confidence scores.
+
+    Parameters:
+    - model: The model object for prediction.
+    - images: list of PIL.Image objects to classify.
+
+    Returns:
+    - confidence_scores: A list of confidence scores for each image.
+    """
+    # Image preprocessing
+    preprocess = transforms.Compose(
+        [
+            transforms.Resize((512, 512)),  # Assuming you want to keep the original size used in training
+            transforms.ToTensor(),
+        ]
+    )
+
+    # Preprocess all images and stack them into a batch
+    processed_images = torch.stack([preprocess(image.convert("RGB")) for image in images])
+
+    # move the batch of images to the GPU
+    processed_images = processed_images.to("cuda")
+
+    with torch.no_grad():  # Inference without tracking gradients
+        outputs = model(processed_images)
+        # move the outputs to the CPU
+        outputs = outputs.cpu()
+        # Assuming binary classification with softmax at the end
+        confidence_scores = torch.softmax(outputs, dim=1).numpy()
+
+    return [float(score[0]) for score in confidence_scores]
+
 
 @ray.remote(num_gpus=1)
 class BMAHighMagRegionChecker:
