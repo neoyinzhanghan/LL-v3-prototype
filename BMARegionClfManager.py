@@ -77,6 +77,9 @@ def predict_batch(pil_images, model):
     - list of float: List of confidence scores for the class label `1` for each image.
     """
 
+    # make sure to reshape all images to 64x64
+    pil_images = [image.resize((64, 64)) for image in pil_images]
+
     transform = transforms.Compose([
         transforms.ToTensor(),
         # transforms.Normalize(mean=(0.61070228, 0.54225375, 0.65411311), std=(0.1485182, 0.1786308, 0.12817113))

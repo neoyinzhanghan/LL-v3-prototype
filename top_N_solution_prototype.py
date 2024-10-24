@@ -3,6 +3,7 @@ import shutil
 import pandas as pd
 from tqdm import tqdm
 from PIL import Image
+from downsample_images import did_we_downsample
 from torch.utils.data import DataLoader
 from data import LowMagRegionDataset, HighMagRegionDataset
 from BMARegionClfManager import load_clf_model, predict_batch
@@ -120,12 +121,16 @@ if __name__ == "__main__":
 
     for dzsave_dir in tqdm(dzsave_dirs, desc="Processing Datasets"):
         print(f"Processing {dzsave_dir}...")
-        start_time = time.time()
-        process_dataset(dzsave_dir)
-        end_time = time.time()
 
-        runtime_metadata["dzsave_dir"].append(dzsave_dir)
-        runtime_metadata["processing_time"].append(end_time - start_time)
+        already_done = did_we_downsample(dzsave_dir)
+
+        if already_done:
+            start_time = time.time()
+            process_dataset(dzsave_dir)
+            end_time = time.time()
+
+            runtime_metadata["dzsave_dir"].append(dzsave_dir)
+            runtime_metadata["processing_time"].append(end_time - start_time)
 
     runtime_metadata_df = pd.DataFrame(runtime_metadata)
     runtime_metadata_df.to_csv("top_N_solution_prototype_runtime_metadata.csv", index=False)
