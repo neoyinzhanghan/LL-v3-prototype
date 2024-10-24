@@ -1,4 +1,5 @@
 import os
+import shutil
 import random
 import openslide
 import pandas as pd
@@ -10,6 +11,10 @@ save_dir = "/media/hdd3/neo/regions_for_greg_to_label"
 pipeline_run_history_path = "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/results_dir/pipeline_run_history.csv"
 
 pipeline_run_history = pd.read_csv(pipeline_run_history_path)
+
+# if save_dir already exists, delete it
+if os.path.exists(save_dir):
+    shutil.rmtree(save_dir)
 
 # create the save_dir if it doesn't exist
 os.makedirs(save_dir, exist_ok=True)
