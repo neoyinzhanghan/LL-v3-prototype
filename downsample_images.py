@@ -76,6 +76,7 @@ presaved_df = pd.read_csv(already_downsampled_df_path)
 presaved_wsi_names = presaved_df["wsi_name"].tolist()
 
 wsi_names_to_process = [wsi_name for wsi_name in wsi_names if wsi_name not in presaved_wsi_names]
+wsi_names_already_downsampled = [wsi_name for wsi_name in wsi_names if wsi_name in presaved_wsi_names]
 
 print(f"Founds {len(wsi_names)} WSI tiles.")
 print(f"Found {len(presaved_wsi_names)} WSI tiles already downsampled.")
@@ -85,6 +86,10 @@ already_downsampled_df = {
     "wsi_name": [],
     "dzsave_dir": []
 }
+
+for wsi_name in wsi_names_already_downsampled:
+    already_downsampled_df["wsi_name"].append(wsi_name)
+    already_downsampled_df["dzsave_dir"].append(os.path.join(save_dir_dzsave, wsi_name[:-5]))
 
 for wsi_name in tqdm(wsi_names, desc="Saving WSI Tiles"):
     # remove the .ndpi extension
