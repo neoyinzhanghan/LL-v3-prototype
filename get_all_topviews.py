@@ -22,7 +22,11 @@ for ndpi_file in tqdm(ndpi_files, desc="Extracting Level 7 Images"):
     level_7_dimensions = slide.level_dimensions[7]
 
     # extract the level 7 image
-    level_7_image = slide.read_region((0, 0), 7, level_7_dimensions)
+    level_7_image = slide.read_region((0, 0), 7, level_7_dimensions) 
+
+    # if rgba, convert to rgb
+    if level_7_image.mode == "RGBA":
+        level_7_image = level_7_image.convert("RGB")
 
     # save the level 7 image as a .jpeg file named topview.jpeg in the dzsave_dir
     level_7_image.save(os.path.join(save_dir_dzsave, ndpi_file_no_ext, "topview.jpeg"))
