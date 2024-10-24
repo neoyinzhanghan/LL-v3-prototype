@@ -294,8 +294,12 @@ def predict_images_batch(model, images):
     # Preprocess all images and stack them into a batch
     processed_images = torch.stack([preprocess(image.convert("RGB")) for image in images])
 
-    # move the batch of images to the GPU
-    processed_images = processed_images.to("cuda")
+    # Ensure model is on the GPU
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model = model.to(device)
+
+    # Move the batch of images to the GPU
+    processed_images = processed_images.to(device)
 
     with torch.no_grad():  # Inference without tracking gradients
         outputs = model(processed_images)
@@ -305,7 +309,6 @@ def predict_images_batch(model, images):
         confidence_scores = torch.softmax(outputs, dim=1).numpy()
 
     return [float(score[0]) for score in confidence_scores]
-
 
 @ray.remote(num_gpus=1)
 class BMAHighMagRegionChecker:
