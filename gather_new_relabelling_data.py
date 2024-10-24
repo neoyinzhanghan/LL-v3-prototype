@@ -7,7 +7,7 @@ from PIL import Image
 from tqdm import tqdm
 
 result_dir = "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/results_dir"
-save_dir = "/media/hdd3/neo/regions_for_neo_to_label"
+save_dir = "/media/hdd3/neo/regions_for_greg_to_label"
 pipeline_run_history_path = "/media/greg/534773e3-83ea-468f-a40d-46c913378014/neo/results_dir/pipeline_run_history.csv"
 
 pipeline_run_history = pd.read_csv(pipeline_run_history_path)
