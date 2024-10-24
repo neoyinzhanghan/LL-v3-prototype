@@ -127,4 +127,4 @@ if __name__ == "__main__":
         runtime_metadata["processing_time"].append(end_time - start_time)
 
     runtime_metadata_df = pd.DataFrame(runtime_metadata)
-    runtime_metadata_df.to_csv("low_mag_prototype_runtime_metadata.csv", index=False)
+    runtime_metadata_df.to_csv("top_N_solution_prototype_runtime_metadata.csv", index=False)
