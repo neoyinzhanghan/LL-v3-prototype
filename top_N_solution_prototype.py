@@ -107,8 +107,8 @@ def process_dataset(dataset_path):
 
 if __name__ == "__main__":
     import time
-    metadata_path = "/media/hdd3/neo/error_slides_dzsave"
-    metadata = pd.read_csv(os.path.join(metadata_path, "metadata.csv"))
+    metadata_path = "/media/hdd3/neo/error_slides_dzsave/already_downsampled.csv"
+    metadata = pd.read_csv(metadata_path)
 
     # get the dzsave_dir column in metadata as a list
     dzsave_dirs = metadata["dzsave_dir"].tolist()
