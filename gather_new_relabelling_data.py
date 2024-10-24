@@ -15,6 +15,7 @@ pipeline_run_history = pd.read_csv(pipeline_run_history_path)
 os.makedirs(save_dir, exist_ok=True)
 os.makedirs(os.path.join(save_dir, "high_mag_selected"), exist_ok=True)
 os.makedirs(os.path.join(save_dir, "high_mag_rejected"), exist_ok=True)
+os.makedirs(os.path.join(save_dir, "ndpi"), exist_ok=True)
 
 # find all the subdirectories in the result_dir that starts with BMA-diff
 subdirs = [d for d in os.listdir(result_dir) if d.startswith("BMA-diff")]
