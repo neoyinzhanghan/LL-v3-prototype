@@ -8,7 +8,12 @@ from torch.utils.data import DataLoader
 from data import LowMagRegionDataset, HighMagRegionDataset
 from BMARegionClfManager import load_clf_model, predict_batch
 from BMAHighMagRegionChecker import load_model_checkpoint, predict_images_batch
-from BMAassumptions import region_clf_ckpt_path, high_mag_region_clf_ckpt_path, high_mag_region_clf_threshold
+from BMAassumptions import (
+    region_clf_ckpt_path,
+    high_mag_region_clf_ckpt_path,
+    high_mag_region_clf_threshold,
+)
+
 
 def process_dataset(dataset_path):
     # Define the low mag test folder paths within the dataset directory
@@ -21,6 +26,10 @@ def process_dataset(dataset_path):
     if os.path.exists(low_mag_test_path):
         shutil.rmtree(low_mag_test_path)
 
+    import sys
+
+    sys.exit()
+
     os.makedirs(low_mag_test_path, exist_ok=True)
 
     # Create the required subdirectories
@@ -30,7 +39,7 @@ def process_dataset(dataset_path):
 
     # Parameters
     batch_size = 256  # Batch size for loading images
-    num_workers = 8   # Adjust number of workers based on your CPU cores
+    num_workers = 8  # Adjust number of workers based on your CPU cores
 
     # Initialize the dataset
     dataset = LowMagRegionDataset(dataset_path)
@@ -41,8 +50,13 @@ def process_dataset(dataset_path):
         return list(pil_images), list(image_names)
 
     # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
-    data_loader = DataLoader(dataset, batch_size=batch_size, num_workers=num_workers, 
-                             shuffle=False, collate_fn=custom_collate_fn)
+    data_loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        shuffle=False,
+        collate_fn=custom_collate_fn,
+    )
 
     # Load the model
     model = load_clf_model(region_clf_ckpt_path)
@@ -53,11 +67,18 @@ def process_dataset(dataset_path):
     # Iterate through the dataset with a DataLoader and progress bar
     for pil_images, image_names in tqdm(data_loader, desc="Processing Low Mag Batches"):
         scores = predict_batch(pil_images, model)
-        results.extend([{"image_name": name, "low_mag_score": score} for name, score in zip(image_names, scores)])
+        results.extend(
+            [
+                {"image_name": name, "low_mag_score": score}
+                for name, score in zip(image_names, scores)
+            ]
+        )
 
     # Convert results to a DataFrame and save to CSV
     results_df = pd.DataFrame(results)
-    results_df.to_csv(os.path.join(low_mag_test_path, "region_predictions.csv"), index=False)
+    results_df.to_csv(
+        os.path.join(low_mag_test_path, "region_predictions.csv"), index=False
+    )
 
     # Sort the results_df by low_mag_score and find the top 1000 images
     results_df = results_df.sort_values(by="low_mag_score", ascending=False)
@@ -73,8 +94,13 @@ def process_dataset(dataset_path):
     high_mag_dataset = HighMagRegionDataset(dataset_path, top_1000)
 
     # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
-    data_loader = DataLoader(high_mag_dataset, batch_size=batch_size, num_workers=num_workers, 
-                             shuffle=False, collate_fn=custom_collate_fn)
+    data_loader = DataLoader(
+        high_mag_dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        shuffle=False,
+        collate_fn=custom_collate_fn,
+    )
 
     # Load the high mag region classifier model
     high_mag_model = load_model_checkpoint(high_mag_region_clf_ckpt_path)
@@ -83,41 +109,53 @@ def process_dataset(dataset_path):
     results = []
 
     # Iterate through the dataset with a DataLoader and progress bar
-    for pil_images, image_names in tqdm(data_loader, desc="Processing High Mag Batches"):
+    for pil_images, image_names in tqdm(
+        data_loader, desc="Processing High Mag Batches"
+    ):
         scores = predict_images_batch(high_mag_model, pil_images)
-        results.extend([{"image_name": name, "high_mag_score": score} for name, score in zip(image_names, scores)])
+        results.extend(
+            [
+                {"image_name": name, "high_mag_score": score}
+                for name, score in zip(image_names, scores)
+            ]
+        )
 
     # Convert results to a DataFrame and save to CSV
     results_df = pd.DataFrame(results)
-    results_df.to_csv(os.path.join(low_mag_test_path, "high_mag_region_predictions.csv"), index=False)
+    results_df.to_csv(
+        os.path.join(low_mag_test_path, "high_mag_region_predictions.csv"), index=False
+    )
 
     # Filter the results based on the high_mag_region_clf_threshold
     selected = results_df[results_df["high_mag_score"] > high_mag_region_clf_threshold]
     rejected = results_df[results_df["high_mag_score"] <= high_mag_region_clf_threshold]
 
     # Save the selected and rejected images to their respective folders
-    for image_name in tqdm(selected["image_name"], desc="Saving Selected High Mag Images"):
+    for image_name in tqdm(
+        selected["image_name"], desc="Saving Selected High Mag Images"
+    ):
         image_path = os.path.join(dataset_path, "18", image_name)
         image = Image.open(image_path)
         image.save(os.path.join(selected_dir, image_name))
 
-    for image_name in tqdm(rejected["image_name"], desc="Saving Rejected High Mag Images"):
+    for image_name in tqdm(
+        rejected["image_name"], desc="Saving Rejected High Mag Images"
+    ):
         image_path = os.path.join(dataset_path, "18", image_name)
         image = Image.open(image_path)
         image.save(os.path.join(rejected_dir, image_name))
 
+
 if __name__ == "__main__":
     import time
+
     metadata_path = "/media/hdd3/neo/error_slides_dzsave/already_downsampled.csv"
     metadata = pd.read_csv(metadata_path)
 
     # get the dzsave_dir column in metadata as a list
     dzsave_dirs = metadata["dzsave_dir"].tolist()
 
-    runtime_metadata = {
-        "dzsave_dir": [],
-        "processing_time": []
-    }
+    runtime_metadata = {"dzsave_dir": [], "processing_time": []}
 
     for dzsave_dir in tqdm(dzsave_dirs, desc="Processing Datasets"):
         print(f"Processing {dzsave_dir}...")
@@ -133,4 +171,6 @@ if __name__ == "__main__":
             runtime_metadata["processing_time"].append(end_time - start_time)
 
     runtime_metadata_df = pd.DataFrame(runtime_metadata)
-    runtime_metadata_df.to_csv("top_N_solution_prototype_runtime_metadata.csv", index=False)
+    runtime_metadata_df.to_csv(
+        "top_N_solution_prototype_runtime_metadata.csv", index=False
+    )
