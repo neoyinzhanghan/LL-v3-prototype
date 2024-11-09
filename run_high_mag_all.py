@@ -23,6 +23,17 @@ for subdir in tqdm(subdirs, desc="Gathering Image Paths"):
 
 print(f"Found {len(all_image_paths)} images.")
 
+metadata_dict = {
+    "idx": range(len(all_image_paths)),
+    "image_path": all_image_paths,
+}
+
+# save the metadata to a csv file
+metadata_df = pd.DataFrame(metadata_dict)
+metadata_df.to_csv(
+    os.path.join(dzsave_dir, "all_high_mag_image_paths.csv"), index=False
+)
+
 # class ImagePathDataset(Dataset):
 #     def __init__(self, image_paths):
 #         """
