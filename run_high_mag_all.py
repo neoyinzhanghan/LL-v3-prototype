@@ -1,6 +1,7 @@
 import os
 import torch
 import random
+import shutil
 import pandas as pd
 from PIL import Image
 from tqdm import tqdm
@@ -115,3 +116,21 @@ metadata_df.to_csv(
 )
 
 print("Done.")
+
+image_save_dir = "/media/hdd3/neo/region_clf_image_samples"
+os.makedirs(image_save_dir, exist_ok=True)
+
+
+def float_to_str(x):
+    return f"{x:.6f}".replace(".", "").lstrip("0")
+
+
+for idx, row in tqdm(metadata_df.iterrows(), desc="Copying Images"):
+    old_image_path = row["image_path"]
+    # new image_path should be the first 6 significant digits of the high_mag_score, make sure to remove the decimal
+    new_image_path = os.path.join(
+        image_save_dir,
+        f"{float_to_str(float(row['high_mag_score']))}_{os.path.basename(old_image_path)}",
+    )
+
+    shutil.copy(old_image_path, new_image_path)
