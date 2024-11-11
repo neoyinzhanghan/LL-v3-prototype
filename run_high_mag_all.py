@@ -79,6 +79,9 @@ metadata_path = os.path.join(dzsave_dir, "all_high_mag_image_paths.csv")
 dataset = ImagePathDataset(metadata_path)
 model_ckpt_path = "/media/hdd3/neo/MODELS/2024-11-07_BMARegionClf-20K/1/version_0/checkpoints/epoch=64-step=21515.ckpt"
 model = load_model_checkpoint(model_ckpt_path)
+metadata_df = pd.read_csv(metadata_path)
+# add a new column to the metadata_df to store the high_mag_score, initialize to missing float
+metadata_df["high_mag_score"] = None
 
 # Parameters
 batch_size = 256  # Batch size for loading images
@@ -95,5 +98,7 @@ data_loader = torch.utils.data.DataLoader(
 for idx, images in tqdm(data_loader, desc="Processing Batches"):
     scores = predict_images_batch(model, images)
 
+    # udpate the metadata_df with the scores
+    metadata_df.loc[idx, "high_mag_score"] = scores
 
-print("Done.")  
+print("Done.")
