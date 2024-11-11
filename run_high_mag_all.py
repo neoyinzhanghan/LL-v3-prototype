@@ -1,8 +1,11 @@
 import os
+import torch
 import pandas as pd
 from PIL import Image
-from torch.utils.data import Dataset
 from tqdm import tqdm
+from torch.utils.data import Dataset
+from torchvision import transforms
+from BMAHighMagRegionChecker import load_model_checkpoint, predict_images_batch
 
 dzsave_dir = "/media/hdd3/neo/error_slides_dzsave/"
 
@@ -34,21 +37,63 @@ metadata_df.to_csv(
     os.path.join(dzsave_dir, "all_high_mag_image_paths.csv"), index=False
 )
 
-# class ImagePathDataset(Dataset):
-#     def __init__(self, image_paths):
-#         """
-#         Args:
-#             image_paths (list of str): List of paths to image files.
-#         """
-#         self.image_paths = image_paths
 
-#     def __len__(self):
-#         return len(self.image_paths)
+class ImagePathDataset(Dataset):
+    def __init__(self, metadata_path):
+        """
+        Args:
+            metadata_path: str
+                The path to the metadata
+            metadata: pd.DataFrame
 
-#     def __getitem__(self, idx):
-#         img_path = self.image_paths[idx]
+        """
+        self.metadata_path = metadata_path
+        self.metadata = pd.read_csv(metadata_path)
 
-#         # Load image
-#         image = Image.open(img_path).convert("RGB")  # Ensure RGB format
+        # print the number of rows in the metadata at initialization
+        print(f"Found {len(self.metadata)} images.")
 
-#         return idx, image, img_path
+    def __len__(self):
+        return len(self.metadata)
+
+    def __getitem__(self, idx):
+        img_path = self.metadata.loc[idx, "image_path"]
+
+        # Load image
+        image = Image.open(img_path).convert("RGB")  # Ensure RGB format
+
+        return idx, image
+
+
+def custom_collate_function(batch):
+    """
+    This function is used to collate the batch of images and their indices.
+    """
+    indices, images = zip(*batch)
+
+    return indices, images
+
+
+# now create a dataloaders for the ImagePathDataset
+metadata_path = os.path.join(dzsave_dir, "all_high_mag_image_paths.csv")
+dataset = ImagePathDataset(metadata_path)
+model_ckpt_path = "/media/hdd3/neo/MODELS/2024-11-07_BMARegionClf-20K/1/version_0/checkpoints/epoch=64-step=21515.ckpt"
+model = load_model_checkpoint(model_ckpt_path)
+
+# Parameters
+batch_size = 256  # Batch size for loading images
+
+# Initialize the DataLoader with specified batch size, number of workers, and custom collate function
+data_loader = torch.utils.data.DataLoader(
+    dataset,
+    batch_size=batch_size,
+    num_workers=8,
+    shuffle=False,
+    collate_fn=custom_collate_function,
+)
+
+for idx, images in tqdm(data_loader, desc="Processing Batches"):
+    scores = predict_images_batch(model, images)
+
+
+print("Done.")  
