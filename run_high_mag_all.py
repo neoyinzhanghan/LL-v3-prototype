@@ -29,7 +29,7 @@ for subdir in tqdm(subdirs, desc="Gathering Image Paths"):
 print(f"Found {len(all_image_paths)} images.")
 
 # randomly select 2048 images to run the high mag region classifier on
-selected_image_paths = random.sample(all_image_paths, 2048)
+selected_image_paths = random.sample(all_image_paths, 2048 * 8)
 
 metadata_dict = {
     "idx": range(len(selected_image_paths)),
@@ -128,9 +128,11 @@ def float_to_str(x):
 for idx, row in tqdm(metadata_df.iterrows(), desc="Copying Images"):
     old_image_path = row["image_path"]
     # new image_path should be the first 6 significant digits of the high_mag_score, make sure to remove the decimal
+
+    high_mag_score = float(row["high_mag_score"])
     new_image_path = os.path.join(
         image_save_dir,
         f"{float_to_str(float(row['high_mag_score']))}.jpeg",
     )
-
-    shutil.copy(old_image_path, new_image_path)
+    if high_mag_score > 0.5:
+        shutil.copy(old_image_path, new_image_path)
