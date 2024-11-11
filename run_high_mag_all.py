@@ -107,6 +107,9 @@ for idx, images in tqdm(data_loader, desc="Processing Batches"):
 
     num_ran += len(images)
 
+    if num_ran >= num_to_run:
+        break
+
 # remove all the rows with missing high_mag_score
 metadata_df = metadata_df.dropna(subset=["high_mag_score"])
 
