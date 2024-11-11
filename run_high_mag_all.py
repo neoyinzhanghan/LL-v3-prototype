@@ -56,7 +56,7 @@ class ImagePathDataset(Dataset):
         self.metadata = pd.read_csv(metadata_path)
 
         # print the number of rows in the metadata at initialization
-        print(f"Found {len(self.metadata)} images.")
+        print(f"Selected {len(self.metadata)} images loaded into dataloader.")
 
     def __len__(self):
         return len(self.metadata)
