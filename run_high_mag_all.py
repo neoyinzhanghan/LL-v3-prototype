@@ -1,5 +1,6 @@
 import os
 import torch
+import random
 import pandas as pd
 from PIL import Image
 from tqdm import tqdm
@@ -26,9 +27,12 @@ for subdir in tqdm(subdirs, desc="Gathering Image Paths"):
 
 print(f"Found {len(all_image_paths)} images.")
 
+# randomly select 2048 images to run the high mag region classifier on
+selected_image_paths = random.sample(all_image_paths, 2048)
+
 metadata_dict = {
-    "idx": range(len(all_image_paths)),
-    "image_path": all_image_paths,
+    "idx": range(len(selected_image_paths)),
+    "image_path": selected_image_paths,
 }
 
 # save the metadata to a csv file
@@ -95,20 +99,12 @@ data_loader = torch.utils.data.DataLoader(
     collate_fn=custom_collate_function,
 )
 
-num_to_run = 2048
-num_ran = 0
-
 for idx, images in tqdm(data_loader, desc="Processing Batches"):
 
     scores = predict_images_batch(model, images)
 
     # udpate the metadata_df with the scores
     metadata_df.loc[idx, "high_mag_score"] = scores
-
-    num_ran += len(images)
-
-    if num_ran >= num_to_run:
-        break
 
 # remove all the rows with missing high_mag_score
 metadata_df = metadata_df.dropna(subset=["high_mag_score"])
