@@ -95,11 +95,20 @@ data_loader = torch.utils.data.DataLoader(
     collate_fn=custom_collate_function,
 )
 
+num_to_run = 2048
+num_ran = 0
+
 for idx, images in tqdm(data_loader, desc="Processing Batches"):
+
     scores = predict_images_batch(model, images)
 
     # udpate the metadata_df with the scores
     metadata_df.loc[idx, "high_mag_score"] = scores
+
+    num_ran += len(images)
+
+# remove all the rows with missing high_mag_score
+metadata_df = metadata_df.dropna(subset=["high_mag_score"])
 
 # save the metadata_df to a csv file WITH the high_mag_score column  file name should indicate that it has been processed
 metadata_df.to_csv(
