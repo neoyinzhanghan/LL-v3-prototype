@@ -101,4 +101,9 @@ for idx, images in tqdm(data_loader, desc="Processing Batches"):
     # udpate the metadata_df with the scores
     metadata_df.loc[idx, "high_mag_score"] = scores
 
+# save the metadata_df to a csv file WITH the high_mag_score column  file name should indicate that it has been processed
+metadata_df.to_csv(
+    os.path.join(dzsave_dir, "all_high_mag_image_paths_processed.csv"), index=False
+)
+
 print("Done.")
