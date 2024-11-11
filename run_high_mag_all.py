@@ -130,7 +130,7 @@ for idx, row in tqdm(metadata_df.iterrows(), desc="Copying Images"):
     # new image_path should be the first 6 significant digits of the high_mag_score, make sure to remove the decimal
     new_image_path = os.path.join(
         image_save_dir,
-        f"{float_to_str(float(row['high_mag_score']))}_{os.path.basename(old_image_path)}",
+        f"{float_to_str(float(row['high_mag_score']))}",
     )
 
     shutil.copy(old_image_path, new_image_path)
