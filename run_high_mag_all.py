@@ -136,3 +136,13 @@ for idx, row in tqdm(metadata_df.iterrows(), desc="Copying Images"):
     )
     if high_mag_score > 0.5:
         shutil.copy(old_image_path, new_image_path)
+
+# get a distribution of the high_mag_scores as a continue density plot
+import matplotlib.pyplot as plt
+
+plt.hist(metadata_df["high_mag_score"], bins=100, density=True)
+plt.xlabel("High Mag Score")
+plt.ylabel("Density")
+plt.title("High Mag Score Distribution")
+
+plt.savefig(os.path.join(image_save_dir, "high_mag_score_distribution.png"))
