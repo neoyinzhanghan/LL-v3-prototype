@@ -26,120 +26,120 @@ def process_dataset(dataset_path):
     if os.path.exists(low_mag_test_path):
         shutil.rmtree(low_mag_test_path)
 
-    # os.makedirs(low_mag_test_path, exist_ok=True)
+    os.makedirs(low_mag_test_path, exist_ok=True)
 
-    # # Create the required subdirectories
-    # os.makedirs(top_1000_dir, exist_ok=True)
-    # os.makedirs(selected_dir, exist_ok=True)
-    # os.makedirs(rejected_dir, exist_ok=True)
+    # Create the required subdirectories
+    os.makedirs(top_1000_dir, exist_ok=True)
+    os.makedirs(selected_dir, exist_ok=True)
+    os.makedirs(rejected_dir, exist_ok=True)
 
-    # # Parameters
-    # batch_size = 256  # Batch size for loading images
-    # num_workers = 8  # Adjust number of workers based on your CPU cores
+    # Parameters
+    batch_size = 256  # Batch size for loading images
+    num_workers = 8  # Adjust number of workers based on your CPU cores
 
-    # # Initialize the dataset
-    # dataset = LowMagRegionDataset(dataset_path)
+    # Initialize the dataset
+    dataset = LowMagRegionDataset(dataset_path)
 
-    # # Custom collate function to handle PIL images and names
-    # def custom_collate_fn(batch):
-    #     pil_images, image_names = zip(*batch)
-    #     return list(pil_images), list(image_names)
+    # Custom collate function to handle PIL images and names
+    def custom_collate_fn(batch):
+        pil_images, image_names = zip(*batch)
+        return list(pil_images), list(image_names)
 
-    # # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
-    # data_loader = DataLoader(
-    #     dataset,
-    #     batch_size=batch_size,
-    #     num_workers=num_workers,
-    #     shuffle=False,
-    #     collate_fn=custom_collate_fn,
-    # )
+    # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
+    data_loader = DataLoader(
+        dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        shuffle=False,
+        collate_fn=custom_collate_fn,
+    )
 
-    # # Load the model
-    # model = load_clf_model(region_clf_ckpt_path)
+    # Load the model
+    model = load_clf_model(region_clf_ckpt_path)
 
-    # # Prepare lists to store results
-    # results = []
+    # Prepare lists to store results
+    results = []
 
-    # # Iterate through the dataset with a DataLoader and progress bar
-    # for pil_images, image_names in tqdm(data_loader, desc="Processing Low Mag Batches"):
-    #     scores = predict_batch(pil_images, model)
-    #     results.extend(
-    #         [
-    #             {"image_name": name, "low_mag_score": score}
-    #             for name, score in zip(image_names, scores)
-    #         ]
-    #     )
+    # Iterate through the dataset with a DataLoader and progress bar
+    for pil_images, image_names in tqdm(data_loader, desc="Processing Low Mag Batches"):
+        scores = predict_batch(pil_images, model)
+        results.extend(
+            [
+                {"image_name": name, "low_mag_score": score}
+                for name, score in zip(image_names, scores)
+            ]
+        )
 
-    # # Convert results to a DataFrame and save to CSV
-    # results_df = pd.DataFrame(results)
-    # results_df.to_csv(
-    #     os.path.join(low_mag_test_path, "region_predictions.csv"), index=False
-    # )
+    # Convert results to a DataFrame and save to CSV
+    results_df = pd.DataFrame(results)
+    results_df.to_csv(
+        os.path.join(low_mag_test_path, "region_predictions.csv"), index=False
+    )
 
-    # # Sort the results_df by low_mag_score and find the top 1000 images
-    # results_df = results_df.sort_values(by="low_mag_score", ascending=False)
-    # top_1000 = results_df["image_name"].head(1000).values
+    # Sort the results_df by low_mag_score and find the top 1000 images
+    results_df = results_df.sort_values(by="low_mag_score", ascending=False)
+    top_1000 = results_df["image_name"].head(1000).values
 
-    # # Save the top 1000 images to the designated folder
-    # for image_name in tqdm(top_1000, desc="Saving Top 1000 Low Mag Images"):
-    #     image_path = os.path.join(dataset_path, "18_downsampled", image_name)
-    #     image = Image.open(image_path)
-    #     image.save(os.path.join(top_1000_dir, image_name))
+    # Save the top 1000 images to the designated folder
+    for image_name in tqdm(top_1000, desc="Saving Top 1000 Low Mag Images"):
+        image_path = os.path.join(dataset_path, "18_downsampled", image_name)
+        image = Image.open(image_path)
+        image.save(os.path.join(top_1000_dir, image_name))
 
-    # # Initialize the HighMagRegionDataset
-    # high_mag_dataset = HighMagRegionDataset(dataset_path, top_1000)
+    # Initialize the HighMagRegionDataset
+    high_mag_dataset = HighMagRegionDataset(dataset_path, top_1000)
 
-    # # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
-    # data_loader = DataLoader(
-    #     high_mag_dataset,
-    #     batch_size=batch_size,
-    #     num_workers=num_workers,
-    #     shuffle=False,
-    #     collate_fn=custom_collate_fn,
-    # )
+    # Initialize the DataLoader with specified batch size, number of workers, and custom collate function
+    data_loader = DataLoader(
+        high_mag_dataset,
+        batch_size=batch_size,
+        num_workers=num_workers,
+        shuffle=False,
+        collate_fn=custom_collate_fn,
+    )
 
-    # # Load the high mag region classifier model
-    # high_mag_model = load_model_checkpoint(high_mag_region_clf_ckpt_path)
+    # Load the high mag region classifier model
+    high_mag_model = load_model_checkpoint(high_mag_region_clf_ckpt_path)
 
-    # # Prepare lists to store results
-    # results = []
+    # Prepare lists to store results
+    results = []
 
-    # # Iterate through the dataset with a DataLoader and progress bar
-    # for pil_images, image_names in tqdm(
-    #     data_loader, desc="Processing High Mag Batches"
-    # ):
-    #     scores = predict_images_batch(high_mag_model, pil_images)
-    #     results.extend(
-    #         [
-    #             {"image_name": name, "high_mag_score": score}
-    #             for name, score in zip(image_names, scores)
-    #         ]
-    #     )
+    # Iterate through the dataset with a DataLoader and progress bar
+    for pil_images, image_names in tqdm(
+        data_loader, desc="Processing High Mag Batches"
+    ):
+        scores = predict_images_batch(high_mag_model, pil_images)
+        results.extend(
+            [
+                {"image_name": name, "high_mag_score": score}
+                for name, score in zip(image_names, scores)
+            ]
+        )
 
-    # # Convert results to a DataFrame and save to CSV
-    # results_df = pd.DataFrame(results)
-    # results_df.to_csv(
-    #     os.path.join(low_mag_test_path, "high_mag_region_predictions.csv"), index=False
-    # )
+    # Convert results to a DataFrame and save to CSV
+    results_df = pd.DataFrame(results)
+    results_df.to_csv(
+        os.path.join(low_mag_test_path, "high_mag_region_predictions.csv"), index=False
+    )
 
-    # # Filter the results based on the high_mag_region_clf_threshold
-    # selected = results_df[results_df["high_mag_score"] > high_mag_region_clf_threshold]
-    # rejected = results_df[results_df["high_mag_score"] <= high_mag_region_clf_threshold]
+    # Filter the results based on the high_mag_region_clf_threshold
+    selected = results_df[results_df["high_mag_score"] > high_mag_region_clf_threshold]
+    rejected = results_df[results_df["high_mag_score"] <= high_mag_region_clf_threshold]
 
-    # # Save the selected and rejected images to their respective folders
-    # for image_name in tqdm(
-    #     selected["image_name"], desc="Saving Selected High Mag Images"
-    # ):
-    #     image_path = os.path.join(dataset_path, "18", image_name)
-    #     image = Image.open(image_path)
-    #     image.save(os.path.join(selected_dir, image_name))
+    # Save the selected and rejected images to their respective folders
+    for image_name in tqdm(
+        selected["image_name"], desc="Saving Selected High Mag Images"
+    ):
+        image_path = os.path.join(dataset_path, "18", image_name)
+        image = Image.open(image_path)
+        image.save(os.path.join(selected_dir, image_name))
 
-    # for image_name in tqdm(
-    #     rejected["image_name"], desc="Saving Rejected High Mag Images"
-    # ):
-    #     image_path = os.path.join(dataset_path, "18", image_name)
-    #     image = Image.open(image_path)
-    #     image.save(os.path.join(rejected_dir, image_name))
+    for image_name in tqdm(
+        rejected["image_name"], desc="Saving Rejected High Mag Images"
+    ):
+        image_path = os.path.join(dataset_path, "18", image_name)
+        image = Image.open(image_path)
+        image.save(os.path.join(rejected_dir, image_name))
 
 
 if __name__ == "__main__":
