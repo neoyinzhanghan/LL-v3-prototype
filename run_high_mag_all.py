@@ -29,7 +29,7 @@ for subdir in tqdm(subdirs, desc="Gathering Image Paths"):
 print(f"Found {len(all_image_paths)} images.")
 
 # randomly select 2048 images to run the high mag region classifier on
-selected_image_paths = random.sample(all_image_paths, 2048 * 8)
+selected_image_paths = random.sample(all_image_paths, 2048 * 12)
 
 metadata_dict = {
     "idx": range(len(selected_image_paths)),
